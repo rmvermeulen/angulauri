@@ -1,10 +1,31 @@
 import { Component } from '@angular/core';
+import { TauriService } from './tauri.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  template: `
+    <span>{{ title }} app is running!</span>
+    <p>cwd: {{ cwd }}</p>
+    <router-outlet></router-outlet>
+    <button (click)="clearCwd()">Clear cwd</button>
+    <button (click)="getCwd()">Fetch cwd</button>
+  `,
 })
 export class AppComponent {
-  title = 'angulauri';
+  title: string = 'Angulauri';
+  cwd: string = '';
+  constructor(private readonly tauri: TauriService) {
+    this.getCwd();
+  }
+
+  getCwd() {
+    this.tauri.getCwd().then((cwd) => (this.cwd = cwd));
+  }
+  setCwd(cwd: string) {
+    this.cwd = cwd;
+  }
+  clearCwd() {
+    this.setCwd('');
+  }
 }
