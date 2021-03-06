@@ -1,7 +1,7 @@
 module.exports = {
   "src/*.{js,ts}": [
     "ng lint --fix --lint-file-patterns",
-    // "ng test --include",
+    "jest --findRelatedTests",
   ],
   "src-tauri/*": ["cargo test"],
 };
