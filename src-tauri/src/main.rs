@@ -18,13 +18,32 @@ fn main() {
             GetCwd { callback, error } => {
               tauri::execute_promise(_webview, move || Ok("rust:cwd"), callback, error)
             }
-            ListFiles {
-              path,
+            GetItems {
+              id,
+              page: _,
+              page_size: _,
               callback,
               error,
             } => {
               //  your command code
-              println!("path {}", path);
+              println!("getItems for '{}'", id);
+              tauri::execute_promise(
+                _webview,
+                move || {
+                  let items = vec![1, 2, 5];
+                  Ok(items)
+                },
+                callback,
+                error,
+              );
+            }
+            CreateResource {
+              items,
+              callback,
+              error,
+            } => {
+              println!("CreateResource with {:?}", items);
+              tauri::execute_promise(_webview, move || Ok("new-uuid"), callback, error);
             }
           }
           Ok(())

@@ -10,8 +10,15 @@ pub enum Cmd {
     callback: String,
     error: String,
   },
-  ListFiles {
-    path: String,
+  GetItems {
+    id: String,
+    page: i32,
+    page_size: i32,
+    callback: String,
+    error: String,
+  },
+  CreateResource {
+    items: Vec<String>,
     callback: String,
     error: String,
   },

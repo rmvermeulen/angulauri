@@ -7,6 +7,7 @@ import { TauriService } from './tauri.service';
   template: `
     <span>{{ title }} app is running!</span>
     <p>cwd: {{ cwd }}</p>
+    <p>items: {{ items }}</p>
     <router-outlet></router-outlet>
     <button (click)="clearCwd()">Clear cwd</button>
     <button (click)="getCwd()">Fetch cwd</button>
@@ -15,12 +16,17 @@ import { TauriService } from './tauri.service';
 export class AppComponent {
   title: string = 'Angulauri';
   cwd: string = '';
+  items: number[] = [];
   constructor(private readonly tauri: TauriService) {
     this.getCwd();
+    this.getItems();
   }
 
-  getCwd() {
-    this.tauri.getCwd().then((cwd) => (this.cwd = cwd));
+  async getCwd() {
+    this.cwd = await this.tauri.getCwd();
+  }
+  async getItems() {
+    this.items = await this.tauri.getItems('asd');
   }
   setCwd(cwd: string) {
     this.cwd = cwd;
