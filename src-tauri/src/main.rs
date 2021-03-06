@@ -3,6 +3,7 @@
   windows_subsystem = "windows"
 )]
 
+use tauri;
 mod cmd;
 
 fn main() {
@@ -10,15 +11,20 @@ fn main() {
     .invoke_handler(|_webview, arg| {
       use cmd::Cmd::*;
       match serde_json::from_str(arg) {
-        Err(e) => {
-          Err(e.to_string())
-        }
+        Err(e) => Err(e.to_string()),
         Ok(command) => {
           match command {
             // definitions for your custom commands from Cmd here
-            MyCustomCommand { argument } => {
+            GetCwd { callback, error } => {
+              tauri::execute_promise(_webview, move || Ok("rust:cwd"), callback, error)
+            }
+            ListFiles {
+              path,
+              callback,
+              error,
+            } => {
               //  your command code
-              println!("{}", argument);
+              println!("path {}", path);
             }
           }
           Ok(())
