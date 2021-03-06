@@ -7,8 +7,10 @@ use tauri;
 mod cmd;
 
 fn main() {
+  let items: Vec<i32> = (0..100).collect();
+
   tauri::AppBuilder::new()
-    .invoke_handler(|_webview, arg| {
+    .invoke_handler(move |_webview, arg| {
       use cmd::Cmd::*;
       match serde_json::from_str(arg) {
         Err(e) => Err(e.to_string()),
@@ -20,22 +22,18 @@ fn main() {
             }
             GetItems {
               id,
-              page: _,
-              page_size: _,
+              page,
+              page_size,
               callback,
               error,
             } => {
               //  your command code
               println!("getItems for '{}'", id);
-              tauri::execute_promise(
-                _webview,
-                move || {
-                  let items = vec![1, 2, 5];
-                  Ok(items)
-                },
-                callback,
-                error,
-              );
+              let page_start = page * page_size;
+              let page_end = page_start + page_size;
+              let selected_items = &items[page_start..page_end];
+              let result: Vec<i32> = selected_items.into();
+              tauri::execute_promise(_webview, move || Ok(result), callback, error);
             }
             CreateResource {
               items,

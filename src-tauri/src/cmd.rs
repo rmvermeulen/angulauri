@@ -12,8 +12,8 @@ pub enum Cmd {
   },
   GetItems {
     id: String,
-    page: i32,
-    page_size: i32,
+    page: usize,
+    page_size: usize,
     callback: String,
     error: String,
   },
