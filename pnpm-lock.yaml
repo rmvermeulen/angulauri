@@ -10,7 +10,9 @@ dependencies:
   '@angular/platform-browser-dynamic': 11.2.4_0fa7bb9a342f37471f2d34c2c0dc5912
   '@angular/router': 11.2.4_454c8a898f8d16ebb7006f708ecdd66a
   '@briebug/jest-schematic': 3.1.0
+  ramda: 0.27.1
   rxjs: 6.6.6
+  snake-case: 3.0.4
   tslib: 2.1.0
   zone.js: 0.11.4
 devDependencies:
@@ -26,6 +28,7 @@ devDependencies:
   '@types/jasmine': 3.6.4
   '@types/jest': 26.0.20
   '@types/node': 12.20.4
+  '@types/ramda': github.com/types/npm-ramda/a090392bed87139dc07e3df4ab0cde8d5c35c32d
   '@typescript-eslint/eslint-plugin': 4.3.0_a75f793d07346736bb49ad1fe81657c7
   '@typescript-eslint/parser': 4.3.0_eslint@7.21.0+typescript@4.1.5
   codelyzer: 6.0.1
@@ -5225,6 +5228,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-Lgd2XcJ/NjEw+7tFvfKxOzCYKZsdct5lczQ2ZaQY8Djz7pfAD3Gbp8ySJWtreII/vDlMVmxwa6pHmdxIYgttDg==
+  /dot-case/3.0.4:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==
   /dot-prop/5.3.0:
     dependencies:
       is-obj: 2.0.0
@@ -9122,6 +9132,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-W0b4AUft7leIcPCG0Eghz5mOVR8=
+  /lower-case/2.0.2:
+    dependencies:
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==
   /lowercase-keys/1.0.0:
     dev: true
     engines:
@@ -9693,6 +9709,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+  /no-case/3.0.4:
+    dependencies:
+      lower-case: 2.0.2
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==
   /node-abi/2.21.0:
     dependencies:
       semver: 5.7.1
@@ -11463,6 +11486,10 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
+  /ramda/0.27.1:
+    dev: false
+    resolution:
+      integrity: sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==
   /randombytes/2.1.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -12552,6 +12579,13 @@ packages:
       npm: '>= 3.0.0'
     resolution:
       integrity: sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
+  /snake-case/3.0.4:
+    dependencies:
+      dot-case: 3.0.4
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==
   /snapdragon-node/2.1.1:
     dependencies:
       define-property: 1.0.0
@@ -14740,6 +14774,12 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-+aybvXv/xafL6I67uSH5yLHrSy4/OaSOV9tniw4yZFIHpINXUcctVHE/WzHxOONrL2GHzJ8Fd4iDrNyaS6TVbg==
+  github.com/types/npm-ramda/a090392bed87139dc07e3df4ab0cde8d5c35c32d:
+    dev: true
+    name: '@types/ramda'
+    resolution:
+      tarball: https://codeload.github.com/types/npm-ramda/tar.gz/a090392bed87139dc07e3df4ab0cde8d5c35c32d
+    version: 0.25.0
 specifiers:
   '@angular-builders/jest': 11.1.0
   '@angular-devkit/build-angular': ~0.1102.3
@@ -14764,6 +14804,7 @@ specifiers:
   '@types/jasmine': ~3.6.0
   '@types/jest': 26.0.20
   '@types/node': ^12.11.1
+  '@types/ramda': github:types/npm-ramda#dist
   '@typescript-eslint/eslint-plugin': 4.3.0
   '@typescript-eslint/parser': 4.3.0
   codelyzer: ^6.0.0
@@ -14778,7 +14819,9 @@ specifiers:
   karma-coverage: ~2.0.3
   lint-staged: ^10.5.4
   protractor: ~7.0.0
+  ramda: ^0.27.1
   rxjs: ~6.6.0
+  snake-case: ^3.0.4
   tauri: ^0.14.1
   ts-node: ~8.3.0
   tslib: ^2.0.0
