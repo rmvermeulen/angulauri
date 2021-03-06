@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { TauriService } from './tauri.service';
+import { map, pluck, switchMap } from 'rxjs/operators';
+import { TauriService, GetItemsResponse } from './tauri.service';
+
 @Component({
   selector: 'app-root',
   styles: [
@@ -15,10 +16,16 @@ import { TauriService } from './tauri.service';
     <span>{{ title }} app is running!</span>
     <p>cwd: {{ cwd$ | async }}</p>
     <p>items: {{ items$ | async }}</p>
+    <p>has-prev: {{ hasPrevPage$ | async }}</p>
+    <p>has-next: {{ hasNextPage$ | async }}</p>
     <div>
-      <button (click)="decPage()">&lt;</button>
+      <button (click)="decPage()" [disabled]="!(hasPrevPage$ | async)">
+        &lt;
+      </button>
       <p>{{ page$ | async }}</p>
-      <button (click)="incPage()">&gt;</button>
+      <button (click)="incPage()" [disabled]="!(hasNextPage$ | async)">
+        &gt;
+      </button>
     </div>
     <div>
       <button (click)="decPageSize()">&lt;</button>
@@ -30,17 +37,23 @@ import { TauriService } from './tauri.service';
 })
 export class AppComponent {
   title: string = 'Angulauri';
-  cwd$: Observable<string>;
-  items$: Observable<string[]>;
   page$ = new BehaviorSubject(0);
   pageSize$ = new BehaviorSubject(10);
+  cwd$: Observable<string>;
+  response$: Observable<GetItemsResponse<string>>;
+  items$: Observable<string[]>;
+  hasNextPage$: Observable<Boolean>;
+  hasPrevPage$: Observable<Boolean>;
   constructor(private readonly tauri: TauriService) {
     this.cwd$ = from(this.tauri.getCwd());
-    this.items$ = combineLatest([this.page$, this.pageSize$]).pipe(
+    this.response$ = combineLatest([this.page$, this.pageSize$]).pipe(
       switchMap(([page, pageSize]: [number, number]) =>
-        from(this.tauri.getItems('id', page, pageSize))
+        from(this.tauri.getItems<string>('id', page, pageSize))
       )
     );
+    this.items$ = this.response$.pipe(map(({ items }) => items));
+    this.hasNextPage$ = this.response$.pipe(map(({ hasNext }) => hasNext));
+    this.hasPrevPage$ = this.response$.pipe(map(({ hasPrev }) => hasPrev));
   }
 
   incPage() {
