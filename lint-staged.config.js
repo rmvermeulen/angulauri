@@ -1,5 +1,5 @@
 module.exports = {
-  "*.{js,ts,s?css}": [
+  "src/*.{js,ts}": [
     "ng lint --fix --lint-file-patterns",
     // "ng test --include",
   ],
