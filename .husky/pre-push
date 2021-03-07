@@ -1,10 +1,13 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# check if all files are formatted
 prettier --check $( git ls-files '*.js' '*.ts' );
-
+# lint & test angular code
 pnpm lint && pnpm test; # && pnpm e2e;
-$wd=$(pwd);
+# go to tauri dir and test there
+wd=$(pwd);
 cd src-tauri;
 cargo test;
+# reset directory
 cd $wd;
