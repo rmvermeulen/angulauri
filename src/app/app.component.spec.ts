@@ -7,7 +7,7 @@ import { promisified } from 'tauri/api/tauri'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
-    let mock: jest.Mock = promisified as any
+    const mock: jest.Mock = promisified as any
     mock.mockImplementation(({ cmd }) => {
       switch (cmd) {
         case 'getCwd':
