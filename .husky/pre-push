@@ -1,9 +1,9 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-prettier --check $( git ls-files '*.js' '*.ts' )
+prettier --check $( git ls-files '*.js' '*.ts' );
 
-pnpm lint && pnpm test && pnpm e2e;
+pnpm lint && pnpm test; # && pnpm e2e;
 $wd=$(pwd);
 cd src-tauri;
 cargo test;
