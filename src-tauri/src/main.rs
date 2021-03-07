@@ -4,16 +4,20 @@
 )]
 use serde;
 use tauri;
+use uuid;
 mod cmd;
 
 #[derive(serde::Serialize)]
 struct GetItemsResponse {
   items: Vec<String>,
-  hasPrev: bool,
-  hasNext: bool,
+  has_prev: bool,
+  has_next: bool,
 }
 
 fn main() {
+  use std::collections::HashMap;
+  use uuid::Uuid;
+  let database: HashMap<Uuid, Vec<String>> = HashMap::new();
   let items: Vec<i32> = (0..100).collect();
 
   tauri::AppBuilder::new()
@@ -47,8 +51,8 @@ fn main() {
                 move || {
                   Ok(GetItemsResponse {
                     items: results.iter().map(|n| n.to_string()).collect(),
-                    hasPrev: page_start > 0,
-                    hasNext: page_end < total_item_count,
+                    has_prev: page_start > 0,
+                    has_next: page_end < total_item_count,
                   })
                 },
                 callback,

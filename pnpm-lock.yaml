@@ -10,6 +10,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 11.2.4_0fa7bb9a342f37471f2d34c2c0dc5912
   '@angular/router': 11.2.4_454c8a898f8d16ebb7006f708ecdd66a
   '@briebug/jest-schematic': 3.1.0
+  camel-case: 4.1.2
   ramda: 0.27.1
   rxjs: 6.6.6
   snake-case: 3.0.4
@@ -28,7 +29,7 @@ devDependencies:
   '@types/jasmine': 3.6.4
   '@types/jest': 26.0.20
   '@types/node': 12.20.4
-  '@types/ramda': github.com/types/npm-ramda/a090392bed87139dc07e3df4ab0cde8d5c35c32d
+  '@types/ramda': github.com/types/npm-ramda/9529aa3c8ff70ff84afcbc0be83443c00f30ea90
   '@typescript-eslint/eslint-plugin': 4.3.0_a75f793d07346736bb49ad1fe81657c7
   '@typescript-eslint/parser': 4.3.0_eslint@7.21.0+typescript@4.1.5
   codelyzer: 6.0.1
@@ -3741,6 +3742,13 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
+  /camel-case/4.1.2:
+    dependencies:
+      pascal-case: 3.1.2
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==
   /camelcase-keys/2.1.0:
     dependencies:
       camelcase: 2.1.1
@@ -10559,6 +10567,13 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==
+  /pascal-case/3.1.2:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.1.0
+    dev: false
+    resolution:
+      integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==
   /pascalcase/0.1.1:
     dev: true
     engines:
@@ -14774,11 +14789,11 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-+aybvXv/xafL6I67uSH5yLHrSy4/OaSOV9tniw4yZFIHpINXUcctVHE/WzHxOONrL2GHzJ8Fd4iDrNyaS6TVbg==
-  github.com/types/npm-ramda/a090392bed87139dc07e3df4ab0cde8d5c35c32d:
+  github.com/types/npm-ramda/9529aa3c8ff70ff84afcbc0be83443c00f30ea90:
     dev: true
     name: '@types/ramda'
     resolution:
-      tarball: https://codeload.github.com/types/npm-ramda/tar.gz/a090392bed87139dc07e3df4ab0cde8d5c35c32d
+      tarball: https://codeload.github.com/types/npm-ramda/tar.gz/9529aa3c8ff70ff84afcbc0be83443c00f30ea90
     version: 0.25.0
 specifiers:
   '@angular-builders/jest': 11.1.0
@@ -14807,6 +14822,7 @@ specifiers:
   '@types/ramda': github:types/npm-ramda#dist
   '@typescript-eslint/eslint-plugin': 4.3.0
   '@typescript-eslint/parser': 4.3.0
+  camel-case: ^4.1.2
   codelyzer: ^6.0.0
   eslint: ^7.6.0
   eslint-plugin-import: 2.22.1
