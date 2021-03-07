@@ -3,7 +3,7 @@ const { pipe, test, partition } = require('ramda')
 
 module.exports = {
   'src/**/*.{js,ts}': [
-    // (files) => `ng lint --fix --lint-file-patterns=${files.join(",")}`,
+    'prettier --write',
     (_) => 'ng lint --fix',
     'jest --findRelatedTests',
   ],
