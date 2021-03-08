@@ -2,9 +2,10 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
+use anyhow::{anyhow, Result};
 use serde;
-use tauri;
-use uuid;
+use std::sync::Arc;
+use std::sync::Mutex;
 mod cmd;
 
 #[derive(serde::Serialize)]
@@ -17,11 +18,12 @@ struct GetItemsResponse {
 fn main() {
   use std::collections::HashMap;
   use uuid::Uuid;
-  let database: HashMap<Uuid, Vec<String>> = HashMap::new();
+  let database = Arc::new(Mutex::new(HashMap::<Uuid, Vec<String>>::new()));
   let items: Vec<i32> = (0..100).collect();
 
   tauri::AppBuilder::new()
     .invoke_handler(move |_webview, arg| {
+      let database = database.clone();
       use cmd::Cmd::*;
       match serde_json::from_str(arg) {
         Err(e) => Err(e.to_string()),
@@ -31,6 +33,7 @@ fn main() {
             GetCwd { callback, error } => {
               tauri::execute_promise(_webview, move || Ok("rust:cwd"), callback, error)
             }
+
             GetItems {
               id,
               page,
@@ -64,8 +67,16 @@ fn main() {
               callback,
               error,
             } => {
-              println!("CreateResource with {:?}", items);
-              tauri::execute_promise(_webview, move || Ok("new-uuid"), callback, error);
+              let id = Uuid::new_v4();
+              println!("CreateResource with {}@{:?}", id, items);
+              tauri::execute_promise(_webview, move || Ok(id), callback, error);
+            }
+            ListResources { callback, error } => {
+              let list: Result<Vec<_>, _> = database
+                .lock()
+                .map(|db| db.keys().copied().collect())
+                .map_err(|err| anyhow!("DB access: {}", err));
+              tauri::execute_promise(_webview, move || list, callback, error)
             }
           }
           Ok(())
