@@ -4,30 +4,37 @@
 )]
 use anyhow::{anyhow, Result};
 use serde;
+use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::Mutex;
 use uuid::Uuid;
 mod cmd;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, Debug)]
 struct GetItemsResponse {
   items: Vec<String>,
   has_prev: bool,
   has_next: bool,
 }
-#[derive(serde::Serialize)]
+
+#[derive(serde::Serialize, Debug)]
 struct CreateResourceResponse {
   id: Uuid,
 }
-#[derive(serde::Serialize)]
+
+#[derive(serde::Serialize, Debug)]
 struct ListResourcesResponse {
   ids: Vec<Uuid>,
 }
 
-fn main() {
-  use std::collections::HashMap;
-  let database = Arc::new(Mutex::new(HashMap::<Uuid, Vec<String>>::new()));
-  let items: Vec<i32> = (0..100).collect();
+fn main() -> Result<()> {
+  let mut database = HashMap::<Uuid, Vec<String>>::new();
+  database.insert(
+    Uuid::new_v4(),
+    (0..100).map(|n| n.to_string()).collect::<Vec<_>>(),
+  );
+
+  let database = Arc::new(Mutex::new(database));
 
   tauri::AppBuilder::new()
     .invoke_handler(move |_webview, arg| {
@@ -49,26 +56,32 @@ fn main() {
               callback,
               error,
             } => {
-              //  your command code
-              println!("getItems for '{}'", id);
               use std::cmp::min;
-              let total_item_count = items.len();
-              let page_start = min(page * page_size, total_item_count - 1);
-              let page_end = min(page_start + page_size, total_item_count - 1);
-              let selected_items = &items[page_start..page_end];
-              let results: Vec<i32> = selected_items.into();
-              tauri::execute_promise(
-                _webview,
-                move || {
-                  Ok(GetItemsResponse {
-                    items: results.iter().map(|n| n.to_string()).collect(),
-                    has_prev: page_start > 0,
-                    has_next: page_end < total_item_count,
-                  })
-                },
-                callback,
-                error,
-              );
+              let response = Uuid::parse_str(&id)
+                .map_err(|e| anyhow!("Uuid {}", e))
+                .and_then(|id| {
+                  database
+                    .lock()
+                    .map_err(|e| anyhow!("Database {}", e))
+                    .map(|db| match db.get(&id) {
+                      Some(items) => {
+                        let total_item_count = items.len();
+                        let page_start = min(page * page_size, total_item_count - 1);
+                        let page_end = min(page_start + page_size, total_item_count - 1);
+                        let selected_items = &items[page_start..page_end];
+                        let results: Vec<String> = selected_items.into();
+                        Ok(GetItemsResponse {
+                          items: results,
+                          has_prev: page_start > 0,
+                          has_next: page_end < total_item_count,
+                        })
+                      }
+                      None => Err(anyhow!("No entry for that id")),
+                    })
+                })
+                .and_then(|a| a);
+
+              tauri::execute_promise(_webview, move || response, callback, error);
             }
             CreateResource {
               items,
@@ -102,4 +115,6 @@ fn main() {
     })
     .build()
     .run();
+
+  Ok(())
 }
