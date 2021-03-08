@@ -1,8 +1,7 @@
 import { Component } from '@angular/core'
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
-import { Response, TauriService } from './tauri.service'
-
+import { TauriService } from './tauri.service'
 @Component({
   selector: 'app-root',
   styles: [
@@ -32,6 +31,7 @@ import { Response, TauriService } from './tauri.service'
       <p>{{ pageSize$ | async }}</p>
       <button (click)="incPageSize()">&gt;</button>
     </div>
+    <app-resource></app-resource>
     <router-outlet></router-outlet>
   `,
 })

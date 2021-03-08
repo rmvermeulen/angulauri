@@ -5,10 +5,17 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TauriService } from './tauri.service'
+import { ResourceComponent } from './resource/resource.component'
+import { FormsModule, NgModel } from '@angular/forms'
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule],
+  declarations: [AppComponent, ResourceComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    FormsModule,
+  ],
   providers: [TauriService],
   bootstrap: [AppComponent],
 })

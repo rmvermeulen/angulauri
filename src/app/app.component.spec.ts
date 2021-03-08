@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { AppComponent } from './app.component'
 import { promisified } from 'tauri/api/tauri'
+import { ResourceComponent } from './resource/resource.component'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -20,7 +21,7 @@ describe('AppComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [AppComponent],
+      declarations: [AppComponent, ResourceComponent],
     }).compileComponents()
   })
 

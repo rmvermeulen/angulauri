@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core'
 import { snakeCase } from 'snake-case'
 import { camelCase } from 'camel-case'
 import { promisified } from 'tauri/api/tauri'
+import * as joi from 'joi'
 
-export type Cmd = 'getCwd' | 'getItems' | 'createResource'
+export type Cmd = 'getCwd' | 'getItems' | 'listResources' | 'createResource'
 export type Args<T extends Cmd, R = any> = T extends 'getCwd'
   ? { cmd: 'getCwd' }
   : T extends 'getItems'
   ? { cmd: 'getItems'; id: string; page: number; pageSize: number }
+  : T extends 'listResources'
+  ? { cmd: 'listResources' }
   : T extends 'createResource'
   ? { cmd: 'createResource'; items: R[] }
   : never
@@ -15,6 +18,8 @@ export type Response<T extends Cmd, R = any> = T extends 'getCwd'
   ? GetCwdResponse
   : T extends 'getItems'
   ? GetItemsResponse<R>
+  : T extends 'listResources'
+  ? ListResourcesResponse
   : T extends 'createResource'
   ? CreateResourceResponse
   : never
@@ -24,6 +29,9 @@ export interface GetCwdResponse {
 }
 export interface CreateResourceResponse {
   id: string
+}
+export interface ListResourcesResponse {
+  ids: string[]
 }
 export interface GetItemsResponse<T> {
   items: T[]
@@ -57,6 +65,18 @@ const toRust: <
   providedIn: 'root',
 })
 export class TauriService {
+  private schemas = {
+    listResources: joi.object({
+      ids: joi.array().required().items(joi.string()),
+    }),
+    createResource: joi.object({
+      id: joi.string().required(),
+    }),
+    getItems: joi.object({
+      id: joi.string().required(),
+    }),
+  }
+
   constructor() {}
 
   async getCwd(): Promise<GetCwdResponse> {
@@ -72,14 +92,26 @@ export class TauriService {
       id,
       page,
       pageSize,
-    })
+    }).then(this.validate(this.schemas.getItems))
   }
 
   async createResource<T>(items: T[]): Promise<CreateResourceResponse> {
-    return this.cmd<'createResource'>({ cmd: 'createResource', items })
+    return this.cmd<'createResource'>({ cmd: 'createResource', items }).then(
+      this.validate(this.schemas.createResource),
+    )
+  }
+
+  async listResources(): Promise<ListResourcesResponse> {
+    return this.cmd<'listResources'>({ cmd: 'listResources' }).then(
+      this.validate(this.schemas.listResources),
+    )
   }
 
   private async cmd<C extends Cmd>(cmd: Args<C>): Promise<Response<C>> {
     return promisified(toRust(cmd))
+  }
+
+  private validate<T>(schema: joi.Schema) {
+    return (obj: T) => joi.attempt(obj, schema) as T
   }
 }

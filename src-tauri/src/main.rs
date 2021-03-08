@@ -6,6 +6,7 @@ use anyhow::{anyhow, Result};
 use serde;
 use std::sync::Arc;
 use std::sync::Mutex;
+use uuid::Uuid;
 mod cmd;
 
 #[derive(serde::Serialize)]
@@ -14,10 +15,17 @@ struct GetItemsResponse {
   has_prev: bool,
   has_next: bool,
 }
+#[derive(serde::Serialize)]
+struct CreateResourceResponse {
+  id: Uuid,
+}
+#[derive(serde::Serialize)]
+struct ListResourcesResponse {
+  ids: Vec<Uuid>,
+}
 
 fn main() {
   use std::collections::HashMap;
-  use uuid::Uuid;
   let database = Arc::new(Mutex::new(HashMap::<Uuid, Vec<String>>::new()));
   let items: Vec<i32> = (0..100).collect();
 
@@ -69,14 +77,23 @@ fn main() {
             } => {
               let id = Uuid::new_v4();
               println!("CreateResource with {}@{:?}", id, items);
-              tauri::execute_promise(_webview, move || Ok(id), callback, error);
+              let response = database
+                .lock()
+                .map(|mut db| {
+                  db.insert(id, items);
+                  CreateResourceResponse { id }
+                })
+                .map_err(|err| anyhow!("DB access: {}", err));
+              tauri::execute_promise(_webview, move || response, callback, error);
             }
             ListResources { callback, error } => {
-              let list: Result<Vec<_>, _> = database
+              let response = database
                 .lock()
-                .map(|db| db.keys().copied().collect())
+                .map(|db| ListResourcesResponse {
+                  ids: db.keys().copied().collect(),
+                })
                 .map_err(|err| anyhow!("DB access: {}", err));
-              tauri::execute_promise(_webview, move || list, callback, error)
+              tauri::execute_promise(_webview, move || response, callback, error)
             }
           }
           Ok(())
