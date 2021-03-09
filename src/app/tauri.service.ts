@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
-import { snakeCase } from 'snake-case'
 import { camelCase } from 'camel-case'
-import { promisified } from 'tauri/api/tauri'
 import * as joi from 'joi'
+import { snakeCase } from 'snake-case'
+import { promisified } from 'tauri/api/tauri'
 
 export type Cmd = 'getCwd' | 'getItems' | 'listResources' | 'createResource'
 export type Args<T extends Cmd, R = any> = T extends 'getCwd'

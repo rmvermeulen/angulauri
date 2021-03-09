@@ -2,6 +2,7 @@ import { Component } from '@angular/core'
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 import { TauriService } from './tauri.service'
+
 @Component({
   selector: 'app-root',
   styles: [
@@ -17,6 +18,17 @@ import { TauriService } from './tauri.service'
     <p>items: {{ items$ | async }}</p>
     <p>has-prev: {{ hasPrevPage$ | async }}</p>
     <p>has-next: {{ hasNextPage$ | async }}</p>
+
+    <p>router:</p>
+    <router-outlet></router-outlet>
+    <p>\\router</p>
+
+    <mat-paginator
+      pageIndex="page$|async"
+      pageSize="pageSize$|async"
+      on:page=""
+    ></mat-paginator>
+
     <div>
       <button (click)="decPage()" [disabled]="(hasPrevPage$ | async) === false">
         &lt;
@@ -44,6 +56,7 @@ export class AppComponent {
   items$: Observable<string[]>
   hasNextPage$: Observable<boolean>
   hasPrevPage$: Observable<boolean>
+
   constructor(private readonly tauri: TauriService) {
     this.cwd$ = from(this.tauri.getCwd()).pipe(map(({ cwd }) => cwd))
     this.response$ = combineLatest([this.page$, this.pageSize$]).pipe(

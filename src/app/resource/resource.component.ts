@@ -36,10 +36,7 @@ export class ResourceComponent implements OnInit {
   existing$ = this.getIdList()
   constructor(private readonly resources: ResourceService) {}
 
-  ngOnInit(): void {
-    console.log('resource::ngOnInit() -- BEGIN')
-    console.log('resource::ngOnInit() -- END')
-  }
+  ngOnInit(): void {}
 
   public saveResource(): Observable<string> {
     return from(this.resources.create(this.items))
