@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
-import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, EMPTY, from, Observable } from 'rxjs'
+import { debounceTime, filter, map, switchMap } from 'rxjs/operators'
 import { TauriService } from './tauri.service'
 
 @Component({
@@ -14,7 +14,7 @@ import { TauriService } from './tauri.service'
   ],
   template: `
     <span id="title">{{ title }} app is running!</span>
-    <p>cwd: {{ cwd$ | async }}</p>
+    <p>resourceId: {{ resourceId$ | async }}</p>
     <p>items: {{ items$ | async }}</p>
     <p>has-prev: {{ hasPrevPage$ | async }}</p>
     <p>has-next: {{ hasNextPage$ | async }}</p>
@@ -43,26 +43,30 @@ import { TauriService } from './tauri.service'
       <p>{{ pageSize$ | async }}</p>
       <button (click)="incPageSize()">&gt;</button>
     </div>
-    <app-resource></app-resource>
+    <app-resource (resource)="loadResource($event)"></app-resource>
     <router-outlet></router-outlet>
   `,
 })
 export class AppComponent {
   title = 'Angulauri'
+  resourceId$ = new BehaviorSubject('')
   page$ = new BehaviorSubject(0)
   pageSize$ = new BehaviorSubject(10)
-  cwd$: Observable<string>
   response$: Observable<any>
   items$: Observable<string[]>
   hasNextPage$: Observable<boolean>
   hasPrevPage$: Observable<boolean>
 
   constructor(private readonly tauri: TauriService) {
-    this.cwd$ = from(this.tauri.getCwd()).pipe(map(({ cwd }) => cwd))
-    this.response$ = combineLatest([this.page$, this.pageSize$]).pipe(
-      switchMap(([page, pageSize]: [number, number]) =>
-        from(this.tauri.getItems<string>('id', page, pageSize)),
-      ),
+    const validId$ = this.resourceId$.pipe(filter((id) => id.length > 0))
+    this.response$ = combineLatest([this.page$, this.pageSize$, validId$]).pipe(
+      debounceTime(250),
+      switchMap(([page, pageSize, id]: [number, number, string]) => {
+        console.log({ page, pageSize, id })
+        return id
+          ? from(this.tauri.getItems<string>(id, page, pageSize))
+          : EMPTY
+      }),
     )
     this.items$ = this.response$.pipe(map(({ items }) => items))
     this.hasNextPage$ = this.response$.pipe(map(({ hasNext }) => hasNext))
@@ -83,5 +87,9 @@ export class AppComponent {
 
   decPageSize() {
     this.pageSize$.next(Math.max(1, this.pageSize$.value - 1))
+  }
+
+  loadResource(id: string) {
+    this.resourceId$.next(id)
   }
 }
