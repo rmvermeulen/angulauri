@@ -3,31 +3,31 @@
   windows_subsystem = "windows"
 )]
 use anyhow::{anyhow, Result};
-use serde;
+use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::Mutex;
 use uuid::Uuid;
 mod cmd;
 
-#[derive(serde::Serialize, Debug)]
+#[derive(Serialize, Debug)]
 struct GetItemsResponse {
   items: Vec<String>,
   has_prev: bool,
   has_next: bool,
 }
 
-#[derive(serde::Serialize, Debug)]
+#[derive(Serialize, Debug)]
 struct CreateResourceResponse {
   id: Uuid,
 }
 
-#[derive(serde::Serialize, Debug)]
+#[derive(Serialize, Debug)]
 struct ListResourcesResponse {
   ids: Vec<Uuid>,
 }
 
-fn main() -> Result<()> {
+fn main() {
   let mut database = HashMap::<Uuid, Vec<String>>::new();
   database.insert(
     Uuid::new_v4(),
@@ -56,7 +56,6 @@ fn main() -> Result<()> {
               callback,
               error,
             } => {
-              use std::cmp::min;
               let response = Uuid::parse_str(&id)
                 .map_err(|e| anyhow!("Uuid {}", e))
                 .and_then(|id| {
@@ -65,6 +64,7 @@ fn main() -> Result<()> {
                     .map_err(|e| anyhow!("Database {}", e))
                     .map(|db| match db.get(&id) {
                       Some(items) => {
+                        use std::cmp::min;
                         let total_item_count = items.len();
                         let page_start = min(page * page_size, total_item_count - 1);
                         let page_end = min(page_start + page_size, total_item_count - 1);
@@ -115,6 +115,4 @@ fn main() -> Result<()> {
     })
     .build()
     .run();
-
-  Ok(())
 }
