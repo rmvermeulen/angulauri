@@ -11,6 +11,14 @@ use std::sync::Mutex;
 use tauri::{execute_promise, AppBuilder, Webview};
 use uuid::Uuid;
 mod cmd;
+use cmd::Cmd::*;
+
+type Database = HashMap<Uuid, Vec<String>>;
+type Handle<T> = Arc<Mutex<T>>;
+
+fn create_handle<T>(value: T) -> Handle<T> {
+  Arc::new(Mutex::new(value))
+}
 
 #[derive(Serialize, Debug)]
 struct GetItemsResponse {
@@ -28,39 +36,19 @@ struct CreateResourceResponse {
 struct ListResourcesResponse {
   ids: Vec<Uuid>,
 }
-type Database = HashMap<Uuid, Vec<String>>;
-type Handle<T> = Arc<Mutex<T>>;
 
-fn create_handle<T>(value: T) -> Handle<T> {
-  Arc::new(Mutex::new(value))
+#[derive(Debug)]
+struct AppData {
+  database: Handle<Database>,
 }
 
-fn main() {
-  let mut database = Database::new();
-  database.insert(
-    Uuid::new_v4(),
-    (0..100).map(|n| n.to_string()).collect::<Vec<_>>(),
-  );
-
-  let handler = invoke_handler(create_handle(database));
-  AppBuilder::new().invoke_handler(handler).build().run();
-}
-
-type Handler = dyn FnMut(&mut Webview<'_>, &str) -> Result<(), String>;
-
-fn invoke_handler(database: Handle<Database>) -> Box<Handler> {
-  return Box::new(move |_webview, arg| {
-    let database = database.clone();
-    use cmd::Cmd::*;
+impl AppData {
+  fn invoke_handler(&self, _webview: &mut Webview, arg: &str) -> Result<(), String> {
+    let database = self.database.clone();
     match serde_json::from_str(arg) {
       Err(e) => Err(e.to_string()),
       Ok(command) => {
         match command {
-          // definitions for your custom commands from Cmd here
-          GetCwd { callback, error } => {
-            execute_promise(_webview, move || Ok("rust:cwd"), callback, error)
-          }
-
           GetItems {
             id,
             page,
@@ -124,5 +112,42 @@ fn invoke_handler(database: Handle<Database>) -> Box<Handler> {
         Ok(())
       }
     }
-  });
+  }
+  fn get_items(&self, id: usize, page: usize, page_size: usize) -> anyhow::Result<()> {
+    Ok(())
+  }
+  fn create_resource(&self, items: Vec<String>) -> anyhow::Result<()> {
+    Ok(())
+  }
+  fn list_resources(&self) -> anyhow::Result<()> {
+    Ok(())
+  }
+}
+
+fn main() {
+  let mut database = Database::new();
+  database.insert(
+    Uuid::new_v4(),
+    (0..100).map(|n| n.to_string()).collect::<Vec<_>>(),
+  );
+
+  let app = AppData {
+    database: create_handle(database),
+  };
+
+  AppBuilder::new()
+    .invoke_handler(move |webview, json| app.invoke_handler(webview, json))
+    .build()
+    .run();
+}
+
+#[cfg(test)]
+mod tests {
+  // Note this useful idiom: importing names from outer (for mod tests) scope.
+  use super::*;
+
+  #[test]
+  fn test_cmd() {
+    assert_eq!((), ());
+  }
 }
