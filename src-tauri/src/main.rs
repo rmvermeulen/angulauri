@@ -44,7 +44,6 @@ struct AppData {
 
 impl AppData {
   fn invoke_handler(&self, _webview: &mut Webview, arg: &str) -> Result<(), String> {
-    let database = self.database.clone();
     match serde_json::from_str(arg) {
       Err(e) => Err(e.to_string()),
       Ok(command) => {
@@ -56,31 +55,7 @@ impl AppData {
             callback,
             error,
           } => {
-            let response = Uuid::parse_str(&id)
-              .map_err(|e| anyhow!("Uuid {}", e))
-              .and_then(|id| {
-                database
-                  .lock()
-                  .map_err(|e| anyhow!("Database {}", e))
-                  .map(|db| match db.get(&id) {
-                    Some(items) => {
-                      use std::cmp::min;
-                      let total_item_count = items.len();
-                      let page_start = min(page * page_size, total_item_count - 1);
-                      let page_end = min(page_start + page_size, total_item_count - 1);
-                      let selected_items = &items[page_start..page_end];
-                      let results: Vec<String> = selected_items.into();
-                      Ok(GetItemsResponse {
-                        items: results,
-                        has_prev: page_start > 0,
-                        has_next: page_end < total_item_count,
-                      })
-                    }
-                    None => Err(anyhow!("No entry for that id")),
-                  })
-              })
-              .and_then(|a| a);
-
+            let response = self.get_items(id, page, page_size);
             execute_promise(_webview, move || response, callback, error);
           }
           CreateResource {
@@ -88,24 +63,11 @@ impl AppData {
             callback,
             error,
           } => {
-            let id = Uuid::new_v4();
-            println!("CreateResource with {}@{:?}", id, items);
-            let response = database
-              .lock()
-              .map(|mut db| {
-                db.insert(id, items);
-                CreateResourceResponse { id }
-              })
-              .map_err(|err| anyhow!("DB access: {}", err));
+            let response = self.create_resource(items);
             execute_promise(_webview, move || response, callback, error);
           }
           ListResources { callback, error } => {
-            let response = database
-              .lock()
-              .map(|db| ListResourcesResponse {
-                ids: db.keys().copied().collect(),
-              })
-              .map_err(|err| anyhow!("DB access: {}", err));
+            let response = self.list_resources();
             execute_promise(_webview, move || response, callback, error)
           }
         }
@@ -113,14 +75,58 @@ impl AppData {
       }
     }
   }
-  fn get_items(&self, id: usize, page: usize, page_size: usize) -> anyhow::Result<()> {
-    Ok(())
+  fn get_items(
+    &self,
+    id: String,
+    page: usize,
+    page_size: usize,
+  ) -> anyhow::Result<GetItemsResponse> {
+    Uuid::parse_str(&id)
+      .map_err(|e| anyhow!("Uuid {}", e))
+      .and_then(|id| {
+        self
+          .database
+          .lock()
+          .map_err(|e| anyhow!("Database {}", e))
+          .map(|db| match db.get(&id) {
+            Some(items) => {
+              use std::cmp::min;
+              let total_item_count = items.len();
+              let page_start = min(page * page_size, total_item_count - 1);
+              let page_end = min(page_start + page_size, total_item_count - 1);
+              let selected_items = &items[page_start..page_end];
+              let results: Vec<String> = selected_items.into();
+              Ok(GetItemsResponse {
+                items: results,
+                has_prev: page_start > 0,
+                has_next: page_end < total_item_count,
+              })
+            }
+            None => Err(anyhow!("No entry for that id")),
+          })
+      })
+      .and_then(|a| a)
   }
-  fn create_resource(&self, items: Vec<String>) -> anyhow::Result<()> {
-    Ok(())
+  fn create_resource(&self, items: Vec<String>) -> anyhow::Result<CreateResourceResponse> {
+    let id = Uuid::new_v4();
+    println!("CreateResource with {}@{:?}", id, items);
+    self
+      .database
+      .lock()
+      .map(|mut db| {
+        db.insert(id, items);
+        CreateResourceResponse { id }
+      })
+      .map_err(|err| anyhow!("DB access: {}", err))
   }
-  fn list_resources(&self) -> anyhow::Result<()> {
-    Ok(())
+  fn list_resources(&self) -> anyhow::Result<ListResourcesResponse> {
+    self
+      .database
+      .lock()
+      .map(|db| ListResourcesResponse {
+        ids: db.keys().copied().collect(),
+      })
+      .map_err(|err| anyhow!("DB access: {}", err))
   }
 }
 
