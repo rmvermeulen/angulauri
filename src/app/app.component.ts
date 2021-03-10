@@ -61,12 +61,9 @@ export class AppComponent {
     const validId$ = this.resourceId$.pipe(filter((id) => id.length > 0))
     this.response$ = combineLatest([this.page$, this.pageSize$, validId$]).pipe(
       debounceTime(250),
-      switchMap(([page, pageSize, id]: [number, number, string]) => {
-        console.log({ page, pageSize, id })
-        return id
-          ? from(this.tauri.getItems<string>(id, page, pageSize))
-          : EMPTY
-      }),
+      switchMap(([page, pageSize, id]: [number, number, string]) =>
+        from(this.tauri.getItems<string>(id, page, pageSize)),
+      ),
     )
     this.items$ = this.response$.pipe(map(({ items }) => items))
     this.hasNextPage$ = this.response$.pipe(map(({ hasNext }) => hasNext))
