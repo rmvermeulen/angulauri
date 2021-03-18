@@ -1,4 +1,5 @@
 import { Component } from '@angular/core'
+import { PageEvent } from '@angular/material/paginator'
 import { BehaviorSubject, combineLatest, EMPTY, from, Observable } from 'rxjs'
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators'
 import { TauriService } from './tauri.service'
@@ -24,9 +25,12 @@ import { TauriService } from './tauri.service'
     <p>\\router</p>
 
     <mat-paginator
-      pageIndex="page$|async"
-      pageSize="pageSize$|async"
-      on:page=""
+      [disabled]="false"
+      [pageIndex]="page$ | async"
+      [pageSize]="pageSize$ | async"
+      [length]="100"
+      [pageSizeOptions]="[5, 10, 15, 25, 50]"
+      (page)="handlePageEvent($event)"
     ></mat-paginator>
 
     <div>
@@ -88,5 +92,15 @@ export class AppComponent {
 
   loadResource(id: string) {
     this.resourceId$.next(id)
+  }
+
+  handlePageEvent({
+    pageIndex,
+    pageSize,
+    previousPageIndex,
+    length,
+  }: PageEvent) {
+    this.page$.next(pageIndex)
+    this.pageSize$.next(pageSize)
   }
 }
