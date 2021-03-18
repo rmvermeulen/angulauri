@@ -4,7 +4,7 @@ const { pipe, test, partition } = require('ramda')
 module.exports = {
   'src/**/*.{js,ts}': [
     'prettier --write',
-    (_) => 'ng lint --fix',
+    'eslint --fix',
     'jest --findRelatedTests',
   ],
   'src-tauri/**/*': [
