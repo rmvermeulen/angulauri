@@ -15,6 +15,11 @@ pub enum Cmd {
     callback: String,
     error: String,
   },
+  GetInfo {
+    id: String,
+    callback: String,
+    error: String,
+  },
   ListResources {
     callback: String,
     error: String,

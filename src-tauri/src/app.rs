@@ -29,6 +29,13 @@ pub struct CreateResourceResponse {
 }
 
 #[derive(Serialize, Debug)]
+pub struct GetInfoResponse {
+  id: Uuid,
+  length: usize,
+  // date created, modified, etc
+}
+
+#[derive(Serialize, Debug)]
 pub struct ListResourcesResponse {
   ids: Vec<Uuid>,
 }
@@ -57,6 +64,14 @@ impl App {
         error,
       } => {
         let response = self.create_resource(items);
+        execute_promise(_webview, move || response, callback, error);
+      }
+      GetInfo {
+        id,
+        callback,
+        error,
+      } => {
+        let response = self.get_info(&id);
         execute_promise(_webview, move || response, callback, error);
       }
       ListResources { callback, error } => {
@@ -114,6 +129,7 @@ impl App {
 
     result
   }
+
   pub fn create_resource(&self, items: Vec<String>) -> anyhow::Result<CreateResourceResponse> {
     let id = Uuid::new_v4();
     println!("CreateResource with {}@{:?}", id, items);
@@ -126,6 +142,23 @@ impl App {
       })
       .map_err(|err| anyhow!("DB access: {}", err))
   }
+
+  pub fn get_info(&self, id: &str) -> anyhow::Result<GetInfoResponse> {
+    let id = Uuid::parse_str(&id).map_err(|e| anyhow!("Uuid {}", e))?;
+
+    let db = self
+      .database
+      .lock()
+      .map_err(|e| anyhow!("Database {}", e))?;
+
+    let items = db.get(&id).ok_or(anyhow!("No entry for that id"))?;
+
+    Ok(GetInfoResponse {
+      id,
+      length: items.len(),
+    })
+  }
+
   pub fn list_resources(&self) -> anyhow::Result<ListResourcesResponse> {
     self
       .database
