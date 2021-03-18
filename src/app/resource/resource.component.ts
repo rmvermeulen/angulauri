@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { from, Observable } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { switchMap } from 'rxjs/operators'
 import { ResourceService } from '../resource.service'
 
 @Component({
@@ -46,9 +46,12 @@ export class ResourceComponent implements OnInit {
   public removeItem(index: number) {
     this.items.splice(index, 1)
   }
-  public saveResource(): Observable<string> {
-    return from(this.resources.create(this.items.map(({ value }) => value)))
+  public saveResource(): void {
+    this.existing$ = from(
+      this.resources.create(this.items.map(({ value }) => value)),
+    ).pipe(switchMap((_id) => this.getIdList()))
   }
+
   public trackByIndex(index: number, _item: any): number {
     return index
   }
