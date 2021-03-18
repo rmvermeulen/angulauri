@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # check if all files are formatted
-pnpx prettier --check $( git ls-files '*.js' '*.ts' );
+pnpx prettier --check "src/**/*.{j,t}s";
 # lint & test angular code
 pnpm lint && pnpm test; # && pnpm e2e;
 # go to tauri dir and test there
