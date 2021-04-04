@@ -1,5 +1,7 @@
 use crate::cmd::Cmd;
 use crate::cmd::Cmd::*;
+use crate::cmd::FsCmd::Readdir;
+use crate::cmd::FsCmd::ScanRepo;
 
 use anyhow::anyhow;
 use serde::Serialize;
@@ -78,6 +80,22 @@ impl App {
         let response = self.list_resources();
         execute_promise(_webview, move || response, callback, error)
       }
+      FsCmd(fs_cmd) => match fs_cmd {
+        Readdir {
+          path,
+          callback,
+          error,
+        } => {
+          println!("Readdir: Not implemented lmao");
+        }
+        ScanRepo {
+          path,
+          callback,
+          error,
+        } => {
+          println!("Scanrepo: Not implemented lmao");
+        }
+      },
     }
   }
 

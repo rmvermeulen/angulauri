@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+import { TauriService } from '../tauri/tauri.service'
 
 @Component({
   selector: 'app-file-system',
@@ -6,7 +7,10 @@ import { Component, OnInit } from '@angular/core'
   styles: [],
 })
 export class FileSystemComponent implements OnInit {
-  constructor() {}
+  constructor(private readonly tauri: TauriService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this, 'onInit')
+    this.tauri.fsCmd()
+  }
 }

@@ -4,7 +4,14 @@ import * as joi from 'joi'
 import { snakeCase } from 'snake-case'
 import { promisified } from 'tauri/api/tauri'
 
-export type Cmd = 'getItems' | 'listResources' | 'getInfo' | 'createResource'
+export type Cmd =
+  | 'getItems'
+  | 'listResources'
+  | 'getInfo'
+  | 'createResource'
+  | 'fsCmd'
+
+export type FsCmd = 'readdir' | 'scanRepo'
 
 export type Args<T extends Cmd, R = any> = T extends 'getItems'
   ? { cmd: 'getItems'; id: string; page: number; pageSize: number }
@@ -14,6 +21,8 @@ export type Args<T extends Cmd, R = any> = T extends 'getItems'
   ? { cmd: 'getInfo'; id: string }
   : T extends 'createResource'
   ? { cmd: 'createResource'; items: R[] }
+  : T extends 'fsCmd'
+  ? { cmd: 'fsCmd'; fs: FsCmd; path: string }
   : never
 
 export type Response<T extends Cmd, R = any> = T extends 'getItems'
@@ -86,7 +95,22 @@ export class TauriService {
   }
 
   constructor() {}
-
+  fsCmd() {
+    this.cmd({
+      cmd: 'fsCmd',
+      fs: 'readdir',
+      path: '/',
+    } as any)
+      .then(console.log)
+      .catch(console.error)
+    this.cmd({
+      cmd: 'fsCmd',
+      fs: 'scanRepo',
+      path: '/',
+    } as any)
+      .then(console.log)
+      .catch(console.error)
+  }
   async getItems<T = string>(
     id: string,
     page = 0,
