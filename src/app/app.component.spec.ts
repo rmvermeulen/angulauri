@@ -1,19 +1,16 @@
 jest.mock('tauri/api/tauri')
 
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { MatPaginatorModule } from '@angular/material/paginator'
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterTestingModule } from '@angular/router/testing'
 import { AppComponent } from './app.component'
-import { ResourceComponent } from './resource/resource.component'
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>
   let app: AppComponent
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, MatPaginatorModule, NoopAnimationsModule],
-      declarations: [AppComponent, ResourceComponent],
+      imports: [RouterTestingModule],
+      declarations: [AppComponent],
     }).compileComponents()
 
     fixture = TestBed.createComponent(AppComponent)

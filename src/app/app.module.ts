@@ -5,12 +5,20 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { ResourceComponent } from './resource/resource.component'
-import { TauriService } from './tauri.service'
 import { FileSystemComponent } from './file-system/file-system.component'
+import { ResourceComponent } from './resource/resource.component'
+import { ResourceService } from './resource/resource.service'
+import { ResourcesComponent } from './resources/resources.component'
+import { TauriService } from './tauri/tauri.service'
 
 @NgModule({
-  declarations: [AppComponent, ResourceComponent, FileSystemComponent],
+  declarations: [
+    AppComponent,
+    FileSystemComponent,
+    ResourceComponent,
+    ResourcesComponent,
+  ],
+  providers: [ResourceService, TauriService],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -18,7 +26,6 @@ import { FileSystemComponent } from './file-system/file-system.component'
     FormsModule,
     MatPaginatorModule,
   ],
-  providers: [TauriService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

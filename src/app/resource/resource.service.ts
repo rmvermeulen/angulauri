@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { TauriService } from './tauri.service'
+import { TauriService } from '../tauri/tauri.service'
 
 const prop = <I, K extends keyof I>(p: K) => (record: I) => record[p]
 

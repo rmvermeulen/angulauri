@@ -1,8 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { from, Observable } from 'rxjs'
 import { map, switchMap, tap } from 'rxjs/operators'
-import { ResourceService } from '../resource.service'
-import { GetInfoResponse } from '../tauri.service'
+import { ResourceService } from './resource.service'
 
 @Component({
   selector: 'app-resource',
