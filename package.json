@@ -8,7 +8,7 @@
     "test": "jest",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev": "tauri dev",
+    "dev": "echo 'run `ng serve` and `tauri dev` separately'",
     "tauri": "tauri",
     "prepare": "husky install"
   },

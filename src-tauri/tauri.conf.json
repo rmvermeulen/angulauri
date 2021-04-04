@@ -2,7 +2,6 @@
   "build": {
     "distDir": "../dist",
     "devPath": "http://localhost:4200",
-    "beforeDevCommand": "ng serve",
     "beforeBuildCommand": "ng build"
   },
   "ctx": {},
