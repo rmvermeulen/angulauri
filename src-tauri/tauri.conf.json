@@ -2,7 +2,7 @@
   "build": {
     "distDir": "../dist",
     "devPath": "http://localhost:4200",
-    "beforeDevCommand": "pnpm i --ignore-scripts && ng serve",
+    "beforeDevCommand": "ng serve",
     "beforeBuildCommand": "ng build"
   },
   "ctx": {},
