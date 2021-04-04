@@ -7,9 +7,10 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { ResourceComponent } from './resource/resource.component'
 import { TauriService } from './tauri.service'
+import { FileSystemComponent } from './file-system/file-system.component'
 
 @NgModule({
-  declarations: [AppComponent, ResourceComponent],
+  declarations: [AppComponent, ResourceComponent, FileSystemComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
