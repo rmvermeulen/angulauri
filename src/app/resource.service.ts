@@ -17,6 +17,10 @@ export class ResourceService {
     return this.tauri.getItems(id).then(prop('items'))
   }
 
+  async info(id: string) {
+    return this.tauri.getInfo(id)
+  }
+
   async list(): Promise<string[]> {
     return this.tauri.listResources().then(prop('ids'))
   }

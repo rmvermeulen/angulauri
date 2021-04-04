@@ -8,16 +8,15 @@ import { GetItemsResponse, TauriService } from './tauri.service'
   selector: 'app-root',
   styles: [],
   template: `
+    <p>router:</p>
     <router-outlet></router-outlet>
+    <p>\\router</p>
     <span id="title">{{ title }} app is running!</span>
     <div *ngIf="itemPage$ | async as page">
       <p>resourceId: {{ resourceId$ | async }}</p>
       <p>items: {{ page.items }}</p>
       <p>has-prev: {{ page.hasPrev }}</p>
       <p>has-next: {{ page.hasNext }}</p>
-
-      <p>router:</p>
-      <p>\\router</p>
 
       <mat-paginator
         [disabled]="false"

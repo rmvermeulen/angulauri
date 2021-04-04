@@ -1,7 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { from, Observable } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 import { ResourceService } from '../resource.service'
+import { GetInfoResponse } from '../tauri.service'
 
 @Component({
   selector: 'app-resource',
@@ -27,6 +28,7 @@ import { ResourceService } from '../resource.service'
     <ol>
       <li *ngFor="let id of existing$ | async">
         <span>{{ id }} </span><button (click)="resource.emit(id)">load</button>
+        <span>size: {{ getResourceLength(id) | async }}</span>
       </li>
     </ol>
     <p>[end of list]</p>
@@ -51,11 +53,17 @@ export class ResourceComponent implements OnInit {
       this.resources.create(this.items.map(({ value }) => value)),
     ).pipe(switchMap((_id) => this.getIdList()))
   }
-
   public trackByIndex(index: number, _item: any): number {
     return index
   }
   public getIdList(): Observable<string[]> {
     return from(this.resources.list())
+  }
+  public getResourceLength(id: string): Observable<number> {
+    console.log('getResourceLength', id)
+    return from(this.resources.info(id)).pipe(
+      tap(console.log),
+      map(({ length }) => length),
+    )
   }
 }

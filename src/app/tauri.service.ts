@@ -4,14 +4,18 @@ import * as joi from 'joi'
 import { snakeCase } from 'snake-case'
 import { promisified } from 'tauri/api/tauri'
 
-export type Cmd = 'getItems' | 'listResources' | 'createResource'
+export type Cmd = 'getItems' | 'listResources' | 'getInfo' | 'createResource'
+
 export type Args<T extends Cmd, R = any> = T extends 'getItems'
   ? { cmd: 'getItems'; id: string; page: number; pageSize: number }
   : T extends 'listResources'
   ? { cmd: 'listResources' }
+  : T extends 'getInfo'
+  ? { cmd: 'getInfo'; id: string }
   : T extends 'createResource'
   ? { cmd: 'createResource'; items: R[] }
   : never
+
 export type Response<T extends Cmd, R = any> = T extends 'getItems'
   ? GetItemsResponse<R>
   : T extends 'listResources'
@@ -25,6 +29,10 @@ export interface GetCwdResponse {
 }
 export interface CreateResourceResponse {
   id: string
+}
+export interface GetInfoResponse {
+  id: string
+  length: number
 }
 export interface ListResourcesResponse {
   ids: string[]
@@ -66,6 +74,10 @@ export class TauriService {
     createResource: joi.object({
       id: joi.string().required(),
     }),
+    getInfo: joi.object({
+      id: joi.string().required(),
+      length: joi.number().required(),
+    }),
     getItems: joi.object({
       items: joi.array().required().items(joi.string()),
       hasNext: joi.bool().required(),
@@ -97,6 +109,12 @@ export class TauriService {
   async listResources(): Promise<ListResourcesResponse> {
     return this.cmd<'listResources'>({ cmd: 'listResources' }).then(
       this.validate<ListResourcesResponse>(this.schemas.listResources),
+    )
+  }
+
+  async getInfo(id: string): Promise<GetInfoResponse> {
+    return this.cmd<'getInfo'>({ cmd: 'getInfo', id }).then(
+      this.validate<GetInfoResponse>(this.schemas.getInfo),
     )
   }
 
