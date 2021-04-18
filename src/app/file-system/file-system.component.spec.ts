@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-
 import { FileSystemComponent } from './file-system.component'
+import { NodeComponent } from './node/node.component'
 
 describe('FileSystemComponent', () => {
   let component: FileSystemComponent
@@ -8,7 +8,7 @@ describe('FileSystemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FileSystemComponent],
+      declarations: [FileSystemComponent, NodeComponent],
     }).compileComponents()
   })
 
