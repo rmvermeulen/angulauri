@@ -10,7 +10,6 @@ export class FileSystemComponent implements OnInit {
   constructor(private readonly tauri: TauriService) {}
 
   ngOnInit(): void {
-    console.log(this, 'onInit')
     this.tauri.fsCmd()
   }
 }

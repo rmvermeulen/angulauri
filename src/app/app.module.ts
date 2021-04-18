@@ -11,11 +11,11 @@ import { ResourceService } from './resource/resource.service'
 import { ResourcesComponent } from './resources/resources.component'
 import { TauriService } from './tauri/tauri.service'
 import { OverviewComponent } from './overview/overview.component'
+import { FileSystemModule } from './file-system/file-system.module'
 
 @NgModule({
   declarations: [
     AppComponent,
-    FileSystemComponent,
     ResourceComponent,
     ResourcesComponent,
     OverviewComponent,
@@ -27,6 +27,7 @@ import { OverviewComponent } from './overview/overview.component'
     BrowserAnimationsModule,
     FormsModule,
     MatPaginatorModule,
+    FileSystemModule,
   ],
   bootstrap: [AppComponent],
 })
