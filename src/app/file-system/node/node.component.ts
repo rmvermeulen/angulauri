@@ -30,13 +30,13 @@ export type INodeData = IFileData | IFolderData
   ],
   template: `
     <div *ngIf="data" [ngClass]="classes">
-      <div [class]="file" *ngIf="getFile() as file">
+      <h2 [class]="'file'" *ngIf="getFile() as file">
         file
         <code>{{ file.path }}</code>
         contains:
         <pre>{{ file.content }}</pre>
-      </div>
-      <div [class]="folder" *ngIf="getFolder() as folder">
+      </h2>
+      <div [class]="'folder'" *ngIf="getFolder() as folder">
         folder <code>{{ folder.path }}</code> contains:
         <app-node
           *ngFor="let child of folder.children"
@@ -68,11 +68,5 @@ export class NodeComponent implements OnInit {
   }
   public getFolder(): IFolderData | undefined {
     return this.data && 'children' in this.data ? this.data : undefined
-  }
-  public asText(): string {
-    if (!this.data) {
-      return '[EMPTY_NODE]'
-    }
-    return JSON.stringify(this.data, null, 2)
   }
 }

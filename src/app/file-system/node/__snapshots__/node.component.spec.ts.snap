@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NodeComponent data={"children": [Array], "path": "/"} matches expected output 1`] = `
+<app-node
+  data={[Function Object]}
+  depth="0"
+>
+  <div
+    class="node odd"
+  >
+    
+    
+    <div
+      class="folder"
+    >
+       folder 
+      <code>
+        /
+      </code>
+       contains: 
+      
+      <app-node>
+        
+        <div
+          class="node even"
+        >
+          
+          <h2
+            class="file"
+          >
+             file 
+            <code>
+              icon.png
+            </code>
+             contains: 
+            <pre>
+              a file
+            </pre>
+          </h2>
+          
+        </div>
+      </app-node>
+      <app-node>
+        
+        <div
+          class="node even"
+        >
+          
+          <h2
+            class="file"
+          >
+             file 
+            <code>
+              icon.jpg
+            </code>
+             contains: 
+            <pre>
+              a file
+            </pre>
+          </h2>
+          
+        </div>
+      </app-node>
+    </div>
+  </div>
+</app-node>
+`;
+
+exports[`NodeComponent data={"children": [Array], "path": "/"} should create 1`] = `
+<div
+  id="root2"
+>
+  
+  <div
+    class="node odd"
+  >
+    
+    
+    <div
+      class="folder"
+    >
+       folder 
+      <code>
+        /
+      </code>
+       contains: 
+      
+      <app-node>
+        
+        <div
+          class="node even"
+        >
+          
+          <h2
+            class="file"
+          >
+             file 
+            <code>
+              icon.png
+            </code>
+             contains: 
+            <pre>
+              a file
+            </pre>
+          </h2>
+          
+        </div>
+      </app-node>
+      <app-node>
+        
+        <div
+          class="node even"
+        >
+          
+          <h2
+            class="file"
+          >
+             file 
+            <code>
+              icon.jpg
+            </code>
+             contains: 
+            <pre>
+              a file
+            </pre>
+          </h2>
+          
+        </div>
+      </app-node>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`NodeComponent data={"children": [Array], "path": "/"} should create 2`] = `
+<div
+  class="node odd"
+>
+  
+  
+  <div
+    class="folder"
+  >
+     folder 
+    <code>
+      /
+    </code>
+     contains: 
+    
+    <app-node>
+      
+      <div
+        class="node even"
+      >
+        
+        <h2
+          class="file"
+        >
+           file 
+          <code>
+            icon.png
+          </code>
+           contains: 
+          <pre>
+            a file
+          </pre>
+        </h2>
+        
+      </div>
+    </app-node>
+    <app-node>
+      
+      <div
+        class="node even"
+      >
+        
+        <h2
+          class="file"
+        >
+           file 
+          <code>
+            icon.jpg
+          </code>
+           contains: 
+          <pre>
+            a file
+          </pre>
+        </h2>
+        
+      </div>
+    </app-node>
+  </div>
+</div>
+`;
+
+exports[`NodeComponent data={"content": "a file", "path": "/"} matches expected output 1`] = `
+<app-node
+  data={[Function Object]}
+  depth="0"
+>
+  <div
+    class="node odd"
+  >
+    
+    <h2
+      class="file"
+    >
+       file 
+      <code>
+        /
+      </code>
+       contains: 
+      <pre>
+        a file
+      </pre>
+    </h2>
+    
+  </div>
+</app-node>
+`;
+
+exports[`NodeComponent data={"content": "a file", "path": "/"} should create 1`] = `
+<div
+  id="root1"
+>
+  
+  <div
+    class="node odd"
+  >
+    
+    <h2
+      class="file"
+    >
+       file 
+      <code>
+        /
+      </code>
+       contains: 
+      <pre>
+        a file
+      </pre>
+    </h2>
+    
+  </div>
+</div>
+`;
+
+exports[`NodeComponent data={"content": "a file", "path": "/"} should create 2`] = `
+<div
+  class="node odd"
+>
+  
+  <h2
+    class="file"
+  >
+     file 
+    <code>
+      /
+    </code>
+     contains: 
+    <pre>
+      a file
+    </pre>
+  </h2>
+  
+</div>
+`;
+
+exports[`NodeComponent data=undefined matches expected output 1`] = `
+<app-node
+  data="undefined"
+  depth="0"
+>
+  
+</app-node>
+`;
+
+exports[`NodeComponent data=undefined should create 1`] = `
+<div
+  id="root0"
+>
+  
+</div>
+`;
+
+exports[`NodeComponent data=undefined should create 2`] = `null`;
