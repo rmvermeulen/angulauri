@@ -1,43 +1,50 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { assert } from 'chai'
 
-export type IFileData = { path: string; content: string }
-export type IFolderData = { path: string; children: INodeData[] }
-export type INodeData = IFileData | IFolderData
+export type IFile = { path: string; content: string }
+export type IFolder = { path: string; children: INode[] }
+export type INode = IFile | IFolder
 
 @Component({
   selector: 'app-node',
   styles: [
     `
-      .file {
+      .node {
+        border: solid black 1px;
+        border-radius: 12px 0 0 0;
+        margin-left: 8px;
+        background-color: #fda;
       }
-      .folder {
+      .node.file {
+        color: #222;
+        background-color: #2da;
+        border-radius: 12px 0px 0px 12px;
+      }
+      .node.folder {
+        color: #333;
       }
       .even {
-        background-color: #fee;
       }
       .odd {
-        background-color: #eee;
       }
-      .node {
-        margin: 8px;
-        padding: 8px;
-        /*
-        /* border-radius: 8px; */ */
-        color: darkgray;
-        border: solid black 1px;
+      p {
+        margin-left: 10px;
+        font-size: 120%;
       }
     `,
   ],
   template: `
-    <div *ngIf="data" [ngClass]="classes">
-      <h2 [class]="'file'" *ngIf="getFile() as file">
-        file
-        <code>{{ file.path }}</code>
-        contains:
-        <pre>{{ file.content }}</pre>
-      </h2>
-      <div [class]="'folder'" *ngIf="getFolder() as folder">
-        folder <code>{{ folder.path }}</code> contains:
+    <div *ngIf="data; else empty" [ngClass]="classMap">
+      <div *ngIf="getFile() as file">
+        <p>
+          file <code>{{ file.path }}</code> contains:
+          <code>{{ file.content }}</code>
+        </p>
+      </div>
+      <div *ngIf="getFolder() as folder">
+        <p>
+          folder <code>{{ folder.path }}</code> contains:
+        </p>
         <app-node
           *ngFor="let child of folder.children"
           [data]="child"
@@ -46,27 +53,40 @@ export type INodeData = IFileData | IFolderData
         </app-node>
       </div>
     </div>
+    <ng-template #empty><p>---</p></ng-template>
   `,
 })
 export class NodeComponent implements OnInit {
-  @Input() public depth = 0
-  @Input() public data?: INodeData
-  public get classes() {
+  @Input() depth = 0
+  @Input() data?: INode
+
+  get classMap() {
     const isEven = !!(this.depth % 2)
     return {
       node: true,
       even: isEven,
       odd: !isEven,
+      file: !!this.getFile(),
+      folder: !!this.getFolder(),
     }
   }
-  constructor() {}
 
+  static classifyNode(node: INode): 'none' | 'file' | 'folder' {
+    if (node === undefined) {
+      return 'none'
+    }
+    if ('content' in node) {
+      return 'file'
+    }
+    assert('children' in node)
+    return 'folder'
+  }
   ngOnInit(): void {}
 
-  public getFile(): IFileData | undefined {
+  getFile(): IFile | undefined {
     return this.data && 'content' in this.data ? this.data : undefined
   }
-  public getFolder(): IFolderData | undefined {
+  getFolder(): IFolder | undefined {
     return this.data && 'children' in this.data ? this.data : undefined
   }
 }
