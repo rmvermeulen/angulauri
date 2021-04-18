@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { TauriService } from '../tauri/tauri.service'
-import { INodeData } from './node/node.component'
+import { INode } from './node/node.component'
 
 @Component({
   selector: 'app-file-system',
@@ -8,13 +8,19 @@ import { INodeData } from './node/node.component'
     <h2>file-system</h2>
     <app-node [data]="mockFsData"></app-node>
   `,
-  styles: [],
+  styles: [
+    `
+      app-node {
+        background-color: #3ef;
+      }
+    `,
+  ],
 })
 export class FileSystemComponent implements OnInit {
-  public mockFsData: INodeData = {
+  public mockFsData: INode = {
     path: '/',
     children: [
-      { path: 'foo.txt', content: 'asdasd' },
+      { path: 'foo', children: [] },
       {
         path: 'images and such',
         children: [
