@@ -18,9 +18,7 @@ import { Component } from '@angular/core'
         </li>
       </ul>
     </nav>
-    <p>router:</p>
     <router-outlet></router-outlet>
-    <p>\\router</p>
   `,
 })
 export class AppComponent {
