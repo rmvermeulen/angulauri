@@ -8,6 +8,9 @@ import { Component } from '@angular/core'
     <nav>
       <ul>
         <li>
+          <a routerLink="/">Overview</a>
+        </li>
+        <li>
           <a routerLink="/resources">Manage Resources</a>
         </li>
         <li>

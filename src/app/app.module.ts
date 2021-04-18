@@ -10,6 +10,7 @@ import { ResourceComponent } from './resource/resource.component'
 import { ResourceService } from './resource/resource.service'
 import { ResourcesComponent } from './resources/resources.component'
 import { TauriService } from './tauri/tauri.service'
+import { OverviewComponent } from './overview/overview.component'
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { TauriService } from './tauri/tauri.service'
     FileSystemComponent,
     ResourceComponent,
     ResourcesComponent,
+    OverviewComponent,
   ],
   providers: [ResourceService, TauriService],
   imports: [
